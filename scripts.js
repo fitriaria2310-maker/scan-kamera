@@ -269,11 +269,9 @@ if(clearStickersBtn){ clearStickersBtn.addEventListener('click',()=>{ stickers =
 
 // Face mesh + overlays
 const faceEffectsToggle = document.getElementById('faceEffectsToggle');
-const feGlasses = document.getElementById('feGlasses');
-const feHat = document.getElementById('feHat');
-const feMustache = document.getElementById('feMustache');
-const feBlush = document.getElementById('feBlush');
-const feTeeth = document.getElementById('feTeeth');
+const feStyleGlasses = document.getElementById('feStyleGlasses');
+const feStyleHat = document.getElementById('feStyleHat');
+const feStyleCat = document.getElementById('feStyleCat');
 
 let faceLandmarks = null;
 
@@ -300,76 +298,82 @@ function drawFaceOverlays(landmarks){
     const eyeDist = dist(left,right);
 
     // glasses
-    if(feGlasses && feGlasses.checked){
+    if(feStyleGlasses && feStyleGlasses.checked){
       const cx = (left.x + right.x)/2; const cy = (left.y + right.y)/2;
       const angle = Math.atan2(right.y-left.y, right.x-left.x);
-      const lensRadius = eyeDist * 0.45;
-      const bridgeWidth = eyeDist * 0.18;
+      const lensRX = eyeDist * 0.45;
+      const lensRY = eyeDist * 0.35;
       const frameWidth = eyeDist * 0.08;
       ctx.save(); ctx.translate(cx,cy); ctx.rotate(angle);
       ctx.strokeStyle = 'rgba(255,255,255,0.95)'; ctx.lineWidth = frameWidth;
-      ctx.fillStyle = 'rgba(12,12,12,0.55)';
+      ctx.fillStyle = 'rgba(20,20,25,0.42)';
       // left lens
-      ctx.beginPath(); ctx.ellipse(-eyeDist*0.6, 0, lensRadius, lensRadius*0.75, 0, 0, Math.PI*2); ctx.fill();
-      ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(-eyeDist*0.6, 0, lensRX, lensRY, 0, 0, Math.PI*2); ctx.fill(); ctx.stroke();
       // right lens
-      ctx.beginPath(); ctx.ellipse(eyeDist*0.6, 0, lensRadius, lensRadius*0.75, 0, 0, Math.PI*2); ctx.fill();
-      ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(eyeDist*0.6, 0, lensRX, lensRY, 0, 0, Math.PI*2); ctx.fill(); ctx.stroke();
       // bridge
-      ctx.beginPath(); ctx.moveTo(-bridgeWidth/2, 0); ctx.lineTo(bridgeWidth/2, 0); ctx.stroke();
-      // temple tips
-      ctx.beginPath(); ctx.moveTo(-eyeDist*0.6 - lensRadius, 0);
-      ctx.lineTo(-eyeDist*0.6 - lensRadius - eyeDist*0.25, -eyeDist*0.1);
-      ctx.moveTo(eyeDist*0.6 + lensRadius, 0);
-      ctx.lineTo(eyeDist*0.6 + lensRadius + eyeDist*0.25, -eyeDist*0.1);
-      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-eyeDist*0.2, -lensRY*0.15); ctx.lineTo(eyeDist*0.2, -lensRY*0.15); ctx.stroke();
+      // temples
+      ctx.beginPath(); ctx.moveTo(-eyeDist*1.05, 0); ctx.lineTo(-eyeDist*1.35, -eyeDist*0.18); ctx.moveTo(eyeDist*1.05, 0); ctx.lineTo(eyeDist*1.35, -eyeDist*0.18); ctx.stroke();
+      // highlight
+      ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.lineWidth = frameWidth*0.7;
+      ctx.beginPath(); ctx.ellipse(-eyeDist*0.6, -lensRY*0.2, lensRX*0.75, lensRY*0.5, 0, 2.1, 2.7); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(eyeDist*0.6, -lensRY*0.2, lensRX*0.75, lensRY*0.5, 0, 2.1, 2.7); ctx.stroke();
       ctx.restore();
     }
 
     // hat
-    if(feHat && feHat.checked){
-      const cx = (left.x + right.x)/2; const cy = (left.y + right.y)/2 - eyeDist * 1.1;
-      const brim = eyeDist * 1.05;
-      const crownH = eyeDist * 0.8;
+    if(feStyleHat && feStyleHat.checked){
+      const cx = (left.x + right.x)/2; const cy = (left.y + right.y)/2 - eyeDist * 1.15;
+      const brimW = eyeDist * 2.4;
+      const brimH = eyeDist * 0.27;
+      const crownW = eyeDist * 1.7;
+      const crownH = eyeDist * 0.9;
       ctx.save(); ctx.translate(cx, cy);
-      ctx.fillStyle = 'rgba(75,15,170,0.95)';
-      ctx.beginPath(); ctx.ellipse(0, 0, brim, eyeDist*0.25, 0, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.rect(-eyeDist*0.9, -crownH*0.6, eyeDist*1.8, crownH); ctx.fill();
+      ctx.fillStyle = 'rgba(40, 25, 120, 0.96)';
+      ctx.beginPath(); ctx.ellipse(0, 0, brimW, brimH, 0, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = 'rgba(80, 35, 180, 0.95)';
+      ctx.beginPath(); ctx.roundRect(-crownW/2, -crownH*0.7, crownW, crownH, eyeDist*0.2); ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,0.12)'; ctx.fillRect(-crownW*0.35, -crownH*0.55, crownW*0.7, crownH*0.35);
       ctx.restore();
     }
 
-    // mustache
-    if(feMustache && feMustache.checked){
-      const cx = nose.x; const cy = nose.y + eyeDist*0.22;
-      const width = eyeDist * 1.1; const height = eyeDist * 0.22;
-      ctx.save(); ctx.translate(cx,cy);
-      ctx.fillStyle = 'rgba(35,20,15,0.95)';
-      ctx.beginPath(); ctx.moveTo(-width/2,0);
-      ctx.quadraticCurveTo(-width*0.2,height*1.2,0,0);
-      ctx.quadraticCurveTo(width*0.2,height*1.2,width/2,0);
-      ctx.quadraticCurveTo(width*0.3,-height*0.25,0,-height*0.08);
-      ctx.quadraticCurveTo(-width*0.3,-height*0.25,-width/2,0);
-      ctx.fill();
+    // cat effect
+    if(feStyleCat && feStyleCat.checked){
+      const headX = (left.x + right.x)/2;
+      const headY = (left.y + right.y)/2 - eyeDist*0.8;
+      const earSize = eyeDist * 0.65;
+      // ears
+      ctx.save();
+      ctx.fillStyle = 'rgba(120,80,200,0.95)';
+      ctx.beginPath(); ctx.moveTo(headX - eyeDist*0.9, headY);
+      ctx.lineTo(headX - eyeDist*0.9 + earSize*0.25, headY - earSize); ctx.lineTo(headX - eyeDist*0.9 + earSize*0.55, headY); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(headX + eyeDist*0.9, headY);
+      ctx.lineTo(headX + eyeDist*0.9 - earSize*0.25, headY - earSize); ctx.lineTo(headX + eyeDist*0.9 - earSize*0.55, headY); ctx.closePath(); ctx.fill();
+      ctx.fillStyle='rgba(255,190,220,0.7)';
+      ctx.beginPath(); ctx.moveTo(headX - eyeDist*0.9 + earSize*0.18, headY - earSize*0.6);
+      ctx.lineTo(headX - eyeDist*0.9 + earSize*0.4, headY - earSize*0.2);
+      ctx.lineTo(headX - eyeDist*0.9 + earSize*0.08, headY - earSize*0.18); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(headX + eyeDist*0.9 - earSize*0.18, headY - earSize*0.6);
+      ctx.lineTo(headX + eyeDist*0.9 - earSize*0.4, headY - earSize*0.2);
+      ctx.lineTo(headX + eyeDist*0.9 - earSize*0.08, headY - earSize*0.18); ctx.closePath(); ctx.fill();
       ctx.restore();
-    }
-
-    // blush
-    if(feBlush && feBlush.checked){
-      const leftCheek = {x: left.x - eyeDist*0.35, y: left.y + eyeDist*0.4};
-      const rightCheek = {x: right.x + eyeDist*0.35, y: right.y + eyeDist*0.4};
-      const r = eyeDist*0.22;
-      ctx.save(); ctx.fillStyle='rgba(255,100,140,0.35)';
-      ctx.beginPath(); ctx.ellipse(leftCheek.x,leftCheek.y,r,r,0,0,Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.ellipse(rightCheek.x,rightCheek.y,r,r,0,0,Math.PI*2); ctx.fill();
+      // nose
+      ctx.save(); ctx.fillStyle='rgba(255,160,190,0.95)';
+      ctx.beginPath(); ctx.moveTo(nose.x, nose.y); ctx.lineTo(nose.x-6, nose.y+14); ctx.lineTo(nose.x+6, nose.y+14); ctx.closePath(); ctx.fill();
       ctx.restore();
-    }
-
-    // teeth (vampire)
-    if(feTeeth && feTeeth.checked){
-      const cx = mouth.x; const cy = mouth.y + eyeDist*0.08;
-      ctx.save(); ctx.fillStyle='white';
-      ctx.beginPath(); ctx.moveTo(cx-7, cy); ctx.lineTo(cx-4, cy+eyeDist*0.18); ctx.lineTo(cx-1, cy); ctx.fill();
-      ctx.beginPath(); ctx.moveTo(cx+7, cy); ctx.lineTo(cx+4, cy+eyeDist*0.18); ctx.lineTo(cx+1, cy); ctx.fill();
+      // whiskers
+      ctx.save(); ctx.strokeStyle='rgba(255,255,255,0.92)'; ctx.lineWidth=2;
+      const whiskerY = nose.y + eyeDist*0.08;
+      ctx.beginPath(); ctx.moveTo(nose.x-12, whiskerY-4); ctx.lineTo(nose.x-60, whiskerY-12); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(nose.x-12, whiskerY+4); ctx.lineTo(nose.x-60, whiskerY+14); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(nose.x+12, whiskerY-4); ctx.lineTo(nose.x+60, whiskerY-12); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(nose.x+12, whiskerY+4); ctx.lineTo(nose.x+60, whiskerY+14); ctx.stroke();
+      ctx.restore();
+      // cheeks
+      ctx.save(); ctx.fillStyle='rgba(255,150,190,0.25)';
+      ctx.beginPath(); ctx.ellipse(left.x - eyeDist*0.24, left.y + eyeDist*0.35, eyeDist*0.2, eyeDist*0.14, 0, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(right.x + eyeDist*0.24, right.y + eyeDist*0.35, eyeDist*0.2, eyeDist*0.14, 0, 0, Math.PI*2); ctx.fill();
       ctx.restore();
     }
   }catch(err){

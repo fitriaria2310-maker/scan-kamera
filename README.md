@@ -24,8 +24,8 @@ Fitur stiker tambahan:
 - Gunakan tombol `Hapus Stiker` untuk mengosongkan semua stiker.
 
 Fitur wajah:
-- Aktifkan `Aktifkan efek wajah` untuk menempelkan kacamata, topi, dan efek wajah lain langsung di muka.
-- Pilih opsi `Kacamata`, `Topi`, `Kumis`, `Pipi Merah`, atau `Gigi Seram` untuk membuat stiker wajah muncul.
+- Aktifkan `Aktifkan efek wajah` untuk menempelkan efek yang mengikuti muka.
+- Pilih opsi `Kacamata nyata`, `Topi nyata`, atau `Efek kucing` untuk melihat overlay yang lebih realistis.
 
 Catatan:
 - Kamera hanya berfungsi di koneksi yang aman (HTTPS) atau ketika dijalankan dari `localhost`.
