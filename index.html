@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Photo Booth Studio — Efek Imut, Lucu, Menarik & Seram</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Photo Booth Studio</h1>
+    <p>Pilihan efek: imut, lucu, menarik, dan seram. Gunakan kameramu untuk menangkap momen!</p>
+  </header>
+
+  <main>
+    <section class="left">
+      <div class="viewer">
+        <video id="video" autoplay playsinline></video>
+        <canvas id="canvas"></canvas>
+      </div>
+      <div class="controls">
+        <button id="startBtn">Mulai Kamera</button>
+        <button id="captureBtn">Ambil Foto</button>
+        <button id="downloadBtn">Unduh</button>
+        <label><input type="checkbox" id="stickersToggle" checked> Tambahkan stiker</label>
+        <label class="size">Ukuran stiker: <input id="stickerSize" type="range" min="0.05" max="0.4" step="0.01" value="0.18"></label>
+        <button id="clearStickersBtn">Hapus Stiker</button>
+      </div>
+    </section>
+
+    <aside class="right">
+      <h2>Efek</h2>
+      <div id="effects" class="effects">
+        <button data-effect="none" class="active">Normal</button>
+        <button data-effect="cute">Imut</button>
+        <button data-effect="funny">Lucu</button>
+        <button data-effect="cool">Menarik</button>
+        <button data-effect="scary">Seram</button>
+        <button data-effect="glitch">Glitch</button>
+        <button data-effect="pixelate">Pixelate</button>
+        <button data-effect="sepia">Sepia</button>
+        <button data-effect="invert">Invert</button>
+      </div>
+
+      <h3>Pratinjau stiker</h3>
+      <div class="stickers">
+        <button class="sticker-btn" data-sticker="❤️">❤️</button>
+        <button class="sticker-btn" data-sticker="😜">😜</button>
+        <button class="sticker-btn" data-sticker="👻">👻</button>
+        <button class="sticker-btn" data-sticker="🩸">🩸</button>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <small>Dibuat untuk demo. Buka halaman ini di browser yang mendukung kamera (HTTPS atau localhost).</small>
+  </footer>
+
+  <script src="scripts.js"></script>
+</body>
+</html>
