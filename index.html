@@ -49,6 +49,18 @@
         <button class="sticker-btn" data-sticker="👻">👻</button>
         <button class="sticker-btn" data-sticker="🩸">🩸</button>
       </div>
+
+      <h3>Efek Wajah</h3>
+      <div class="face-effects">
+        <label><input type="checkbox" id="faceEffectsToggle"> Aktifkan efek wajah</label>
+        <div class="face-options">
+          <label><input type="checkbox" id="feGlasses" checked> Kacamata</label>
+          <label><input type="checkbox" id="feHat" checked> Topi</label>
+          <label><input type="checkbox" id="feMustache"> Kumis</label>
+          <label><input type="checkbox" id="feBlush"> Pipi Merah</label>
+          <label><input type="checkbox" id="feTeeth"> Gigi Seram</label>
+        </div>
+      </div>
     </aside>
   </main>
 
@@ -56,6 +68,8 @@
     <small>Dibuat untuk demo. Buka halaman ini di browser yang mendukung kamera (HTTPS atau localhost).</small>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
   <script src="scripts.js"></script>
 </body>
 </html>

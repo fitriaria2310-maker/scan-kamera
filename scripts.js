@@ -17,6 +17,7 @@ let stickers = [];
 let dragging = false;
 let dragIndex = -1;
 let dragOffset = {x:0,y:0};
+let mpCamera = null;
 
 const DEFAULT_STICKER_SIZE = parseFloat(stickerSizeInput ? stickerSizeInput.value : 0.18);
 
@@ -26,6 +27,20 @@ async function startCamera(){
     video.srcObject = stream;
     await video.play();
     resizeCanvas();
+
+    // start MediaPipe Camera to feed frames into faceMesh
+    if(typeof Camera !== 'undefined'){
+      mpCamera = new Camera(video, {
+        onFrame: async () => { try{ await faceMesh.send({image: video}); }catch(e){} },
+        width: video.videoWidth || 640,
+        height: video.videoHeight || 480
+      });
+      mpCamera.start();
+    } else {
+      // fallback: poll frames
+      setInterval(()=>{ try{ faceMesh.send({image: video}); }catch(e){} }, 200);
+    }
+
     requestAnimationFrame(draw);
   }catch(e){
     alert('Tidak dapat mengakses kamera: '+e.message);
@@ -156,6 +171,11 @@ function draw(){
         }
       });
     }
+
+    // face overlays drawn on top if enabled
+    if(faceEffectsToggle && faceEffectsToggle.checked && faceLandmarks){
+      drawFaceOverlays(faceLandmarks);
+    }
   }
   requestAnimationFrame(draw);
 }
@@ -246,5 +266,93 @@ if(stickerSizeInput){
 }
 
 if(clearStickersBtn){ clearStickersBtn.addEventListener('click',()=>{ stickers = []; }); }
+
+// Face mesh + overlays
+const faceEffectsToggle = document.getElementById('faceEffectsToggle');
+const feGlasses = document.getElementById('feGlasses');
+const feHat = document.getElementById('feHat');
+const feMustache = document.getElementById('feMustache');
+const feBlush = document.getElementById('feBlush');
+const feTeeth = document.getElementById('feTeeth');
+
+let faceLandmarks = null;
+
+const faceMesh = new FaceMesh({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`});
+faceMesh.setOptions({maxNumFaces:1, refineLandmarks:true, minDetectionConfidence:0.5, minTrackingConfidence:0.5});
+faceMesh.onResults((results)=>{
+  if(results.multiFaceLandmarks && results.multiFaceLandmarks.length){
+    faceLandmarks = results.multiFaceLandmarks[0];
+  } else {
+    faceLandmarks = null;
+  }
+});
+
+function toCanvasPoint(pt){ return {x: pt.x * canvas.width, y: pt.y * canvas.height}; }
+function dist(a,b){ return Math.hypot(a.x-b.x, a.y-b.y); }
+
+function drawFaceOverlays(landmarks){
+  if(!landmarks) return;
+  try{
+    const left = toCanvasPoint(landmarks[33]);
+    const right = toCanvasPoint(landmarks[263]);
+    const nose = toCanvasPoint(landmarks[1]||landmarks[4]);
+    const mouth = toCanvasPoint(landmarks[13]||landmarks[14]||landmarks[0]);
+    const eyeDist = dist(left,right);
+
+    // glasses
+    if(feGlasses && feGlasses.checked){
+      const cx = (left.x + right.x)/2; const cy = (left.y + right.y)/2;
+      const angle = Math.atan2(right.y-left.y, right.x-left.x);
+      const width = eyeDist * 2.2; const height = eyeDist * 0.45;
+      ctx.save(); ctx.translate(cx,cy); ctx.rotate(angle);
+      ctx.fillStyle = 'rgba(20,20,20,0.7)'; ctx.fillRect(-width/2, -height/2, width, height);
+      ctx.fillStyle = 'rgba(0,0,0,0.85)'; ctx.fillRect(-width/2+6, -height/2+6, width-12, height-12);
+      ctx.restore();
+    }
+
+    // hat
+    if(feHat && feHat.checked){
+      const cx = (left.x + right.x)/2; const cy = (left.y + right.y)/2 - eyeDist * 1.1;
+      const width = eyeDist * 2.6; const height = eyeDist * 1.0;
+      ctx.save(); ctx.translate(cx, cy);
+      ctx.fillStyle = 'rgba(80,20,140,0.9)';
+      ctx.beginPath(); ctx.ellipse(0, 0, width/2, height/2, 0, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle='rgba(0,0,0,0.4)'; ctx.fillRect(-width/2, 0, width, height*0.25);
+      ctx.restore();
+    }
+
+    // mustache
+    if(feMustache && feMustache.checked){
+      const cx = nose.x; const cy = nose.y + eyeDist*0.22;
+      const width = eyeDist * 1.0; const height = eyeDist * 0.18;
+      ctx.save(); ctx.translate(cx,cy);
+      ctx.fillStyle = 'rgba(40,20,10,0.95)';
+      ctx.beginPath(); ctx.ellipse(0,0,width/2,height/2,0,0,Math.PI); ctx.fill();
+      ctx.restore();
+    }
+
+    // blush
+    if(feBlush && feBlush.checked){
+      const leftCheek = {x: left.x - eyeDist*0.35, y: left.y + eyeDist*0.4};
+      const rightCheek = {x: right.x + eyeDist*0.35, y: right.y + eyeDist*0.4};
+      const r = eyeDist*0.25;
+      ctx.save(); ctx.fillStyle='rgba(255,100,140,0.35)';
+      ctx.beginPath(); ctx.ellipse(leftCheek.x,leftCheek.y,r,r,0,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(rightCheek.x,rightCheek.y,r,r,0,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+
+    // teeth (vampire)
+    if(feTeeth && feTeeth.checked){
+      const cx = mouth.x; const cy = mouth.y + eyeDist*0.08;
+      ctx.save(); ctx.fillStyle='white';
+      ctx.beginPath(); ctx.moveTo(cx-10, cy); ctx.lineTo(cx-5, cy+18); ctx.lineTo(cx-2, cy); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(cx+10, cy); ctx.lineTo(cx+5, cy+18); ctx.lineTo(cx+2, cy); ctx.fill();
+      ctx.restore();
+    }
+  }catch(err){
+    // ignore drawing errors
+  }
+}
 
 window.addEventListener('resize', resizeCanvas);

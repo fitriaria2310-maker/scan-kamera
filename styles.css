@@ -23,6 +23,8 @@ button:hover{color:#fff}
 .stickers button{font-size:20px;padding:6px 8px}
 .sticker-btn.selected{outline:2px solid var(--accent);border-radius:8px;color:#fff}
 .controls .size{margin-left:8px}
+.face-effects{margin-top:12px}
+.face-options{display:flex;flex-direction:column;gap:6px;margin-top:6px}
 footer{padding:12px 24px;color:rgba(255,255,255,0.6)}
 .active{outline:2px solid var(--accent);color:#fff}
 
