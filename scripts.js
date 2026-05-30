@@ -303,15 +303,26 @@ function drawFaceOverlays(landmarks){
     if(feGlasses && feGlasses.checked){
       const cx = (left.x + right.x)/2; const cy = (left.y + right.y)/2;
       const angle = Math.atan2(right.y-left.y, right.x-left.x);
-      const width = eyeDist * 2.2; const height = eyeDist * 0.45;
-      const frame = eyeDist * 0.12;
+      const lensRadius = eyeDist * 0.45;
+      const bridgeWidth = eyeDist * 0.18;
+      const frameWidth = eyeDist * 0.08;
       ctx.save(); ctx.translate(cx,cy); ctx.rotate(angle);
-      ctx.fillStyle = 'rgba(10,10,10,0.85)';
-      ctx.fillRect(-width/2, -height/2, width, height);
-      ctx.fillStyle = 'rgba(255,255,255,0.12)';
-      ctx.fillRect(-width/2+frame, -height/2+frame, width-2*frame, height-2*frame);
-      ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = frame*0.9;
-      ctx.strokeRect(-width/2, -height/2, width, height);
+      ctx.strokeStyle = 'rgba(255,255,255,0.95)'; ctx.lineWidth = frameWidth;
+      ctx.fillStyle = 'rgba(12,12,12,0.55)';
+      // left lens
+      ctx.beginPath(); ctx.ellipse(-eyeDist*0.6, 0, lensRadius, lensRadius*0.75, 0, 0, Math.PI*2); ctx.fill();
+      ctx.stroke();
+      // right lens
+      ctx.beginPath(); ctx.ellipse(eyeDist*0.6, 0, lensRadius, lensRadius*0.75, 0, 0, Math.PI*2); ctx.fill();
+      ctx.stroke();
+      // bridge
+      ctx.beginPath(); ctx.moveTo(-bridgeWidth/2, 0); ctx.lineTo(bridgeWidth/2, 0); ctx.stroke();
+      // temple tips
+      ctx.beginPath(); ctx.moveTo(-eyeDist*0.6 - lensRadius, 0);
+      ctx.lineTo(-eyeDist*0.6 - lensRadius - eyeDist*0.25, -eyeDist*0.1);
+      ctx.moveTo(eyeDist*0.6 + lensRadius, 0);
+      ctx.lineTo(eyeDist*0.6 + lensRadius + eyeDist*0.25, -eyeDist*0.1);
+      ctx.stroke();
       ctx.restore();
     }
 
