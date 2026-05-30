@@ -304,30 +304,41 @@ function drawFaceOverlays(landmarks){
       const cx = (left.x + right.x)/2; const cy = (left.y + right.y)/2;
       const angle = Math.atan2(right.y-left.y, right.x-left.x);
       const width = eyeDist * 2.2; const height = eyeDist * 0.45;
+      const frame = eyeDist * 0.12;
       ctx.save(); ctx.translate(cx,cy); ctx.rotate(angle);
-      ctx.fillStyle = 'rgba(20,20,20,0.7)'; ctx.fillRect(-width/2, -height/2, width, height);
-      ctx.fillStyle = 'rgba(0,0,0,0.85)'; ctx.fillRect(-width/2+6, -height/2+6, width-12, height-12);
+      ctx.fillStyle = 'rgba(10,10,10,0.85)';
+      ctx.fillRect(-width/2, -height/2, width, height);
+      ctx.fillStyle = 'rgba(255,255,255,0.12)';
+      ctx.fillRect(-width/2+frame, -height/2+frame, width-2*frame, height-2*frame);
+      ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = frame*0.9;
+      ctx.strokeRect(-width/2, -height/2, width, height);
       ctx.restore();
     }
 
     // hat
     if(feHat && feHat.checked){
       const cx = (left.x + right.x)/2; const cy = (left.y + right.y)/2 - eyeDist * 1.1;
-      const width = eyeDist * 2.6; const height = eyeDist * 1.0;
+      const brim = eyeDist * 1.05;
+      const crownH = eyeDist * 0.8;
       ctx.save(); ctx.translate(cx, cy);
-      ctx.fillStyle = 'rgba(80,20,140,0.9)';
-      ctx.beginPath(); ctx.ellipse(0, 0, width/2, height/2, 0, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle='rgba(0,0,0,0.4)'; ctx.fillRect(-width/2, 0, width, height*0.25);
+      ctx.fillStyle = 'rgba(75,15,170,0.95)';
+      ctx.beginPath(); ctx.ellipse(0, 0, brim, eyeDist*0.25, 0, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.rect(-eyeDist*0.9, -crownH*0.6, eyeDist*1.8, crownH); ctx.fill();
       ctx.restore();
     }
 
     // mustache
     if(feMustache && feMustache.checked){
       const cx = nose.x; const cy = nose.y + eyeDist*0.22;
-      const width = eyeDist * 1.0; const height = eyeDist * 0.18;
+      const width = eyeDist * 1.1; const height = eyeDist * 0.22;
       ctx.save(); ctx.translate(cx,cy);
-      ctx.fillStyle = 'rgba(40,20,10,0.95)';
-      ctx.beginPath(); ctx.ellipse(0,0,width/2,height/2,0,0,Math.PI); ctx.fill();
+      ctx.fillStyle = 'rgba(35,20,15,0.95)';
+      ctx.beginPath(); ctx.moveTo(-width/2,0);
+      ctx.quadraticCurveTo(-width*0.2,height*1.2,0,0);
+      ctx.quadraticCurveTo(width*0.2,height*1.2,width/2,0);
+      ctx.quadraticCurveTo(width*0.3,-height*0.25,0,-height*0.08);
+      ctx.quadraticCurveTo(-width*0.3,-height*0.25,-width/2,0);
+      ctx.fill();
       ctx.restore();
     }
 
@@ -335,7 +346,7 @@ function drawFaceOverlays(landmarks){
     if(feBlush && feBlush.checked){
       const leftCheek = {x: left.x - eyeDist*0.35, y: left.y + eyeDist*0.4};
       const rightCheek = {x: right.x + eyeDist*0.35, y: right.y + eyeDist*0.4};
-      const r = eyeDist*0.25;
+      const r = eyeDist*0.22;
       ctx.save(); ctx.fillStyle='rgba(255,100,140,0.35)';
       ctx.beginPath(); ctx.ellipse(leftCheek.x,leftCheek.y,r,r,0,0,Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.ellipse(rightCheek.x,rightCheek.y,r,r,0,0,Math.PI*2); ctx.fill();
@@ -346,8 +357,8 @@ function drawFaceOverlays(landmarks){
     if(feTeeth && feTeeth.checked){
       const cx = mouth.x; const cy = mouth.y + eyeDist*0.08;
       ctx.save(); ctx.fillStyle='white';
-      ctx.beginPath(); ctx.moveTo(cx-10, cy); ctx.lineTo(cx-5, cy+18); ctx.lineTo(cx-2, cy); ctx.fill();
-      ctx.beginPath(); ctx.moveTo(cx+10, cy); ctx.lineTo(cx+5, cy+18); ctx.lineTo(cx+2, cy); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(cx-7, cy); ctx.lineTo(cx-4, cy+eyeDist*0.18); ctx.lineTo(cx-1, cy); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(cx+7, cy); ctx.lineTo(cx+4, cy+eyeDist*0.18); ctx.lineTo(cx+1, cy); ctx.fill();
       ctx.restore();
     }
   }catch(err){

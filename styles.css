@@ -23,8 +23,11 @@ button:hover{color:#fff}
 .stickers button{font-size:20px;padding:6px 8px}
 .sticker-btn.selected{outline:2px solid var(--accent);border-radius:8px;color:#fff}
 .controls .size{margin-left:8px}
-.face-effects{margin-top:12px}
-.face-options{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.face-effects{margin-top:12px;border:1px solid rgba(255,255,255,0.08);padding:12px;border-radius:12px;background:rgba(255,255,255,0.03)}
+.face-effects label{display:flex;align-items:center;gap:8px;font-size:0.95rem;color:#d4d9e8}
+.face-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.face-options label{background:rgba(255,255,255,0.04);padding:8px 10px;border-radius:10px;cursor:pointer}
+.face-options input{transform:scale(1.05)}
 footer{padding:12px 24px;color:rgba(255,255,255,0.6)}
 .active{outline:2px solid var(--accent);color:#fff}
 
