@@ -23,6 +23,10 @@ Fitur stiker tambahan:
 - Gunakan slider `Ukuran stiker` untuk mengubah ukuran stiker yang baru ditambahkan atau ukuran stiker yang sedang dipilih.
 - Gunakan tombol `Hapus Stiker` untuk mengosongkan semua stiker.
 
+Fitur wajah:
+- Aktifkan `Aktifkan efek wajah` untuk menempelkan kacamata, topi, dan efek wajah lain langsung di muka.
+- Pilih opsi `Kacamata`, `Topi`, `Kumis`, `Pipi Merah`, atau `Gigi Seram` untuk membuat stiker wajah muncul.
+
 Catatan:
 - Kamera hanya berfungsi di koneksi yang aman (HTTPS) atau ketika dijalankan dari `localhost`.
 - Kode ini adalah demo sederhana: Anda dapat menambahkan lebih banyak efek dan aset stiker.
